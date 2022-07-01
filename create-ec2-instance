@@ -1,0 +1,59 @@
+#!/bin/bash
+
+export AWS_PAGER=""
+
+ec2InstanceName="ec2-instance-demo"
+
+# aws ec2 describe-images \
+#   --endpoint-url http://localhost:4566 --profile localstack
+
+# aws ec2 describe-instances \
+#   --endpoint-url http://localhost:4566 --profile localstack
+
+vpcId=$(aws ec2 describe-vpcs \
+  --query "Vpcs[0].VpcId" --output text \
+  --endpoint-url http://localhost:4566 --profile localstack)
+
+# aws ec2 describe-subnets \
+#   --endpoint-url http://localhost:4566 --profile localstack
+
+# aws ec2 describe-internet-gateways \
+#   --endpoint-url http://localhost:4566 --profile localstack
+
+internetGatewayId=$(aws ec2 create-internet-gateway \
+  --query 'InternetGateway.InternetGatewayId' --output text \
+  --endpoint-url http://localhost:4566 --profile localstack)
+
+aws ec2 attach-internet-gateway --vpc-id "$vpcId" --internet-gateway-id "$internetGatewayId" \
+  --endpoint-url http://localhost:4566 --profile localstack
+
+aws ec2 describe-internet-gateways \
+  --endpoint-url http://localhost:4566 --profile localstack
+
+keyMaterial=$(aws ec2 create-key-pair --key-name "$ec2InstanceName" \
+  --query "KeyMaterial" --output text \
+  --endpoint-url http://localhost:4566 --profile localstack)
+
+echo "$keyMaterial" > ~/.ssh/ec2-instance-demo
+
+groupId=$(aws ec2 create-security-group \
+  --group-name "$ec2InstanceName" \
+  --description "security group for $ec2InstanceName" \
+  --vpc-id "$vpcId" \
+  --query "GroupId" --output text \
+  --endpoint-url http://localhost:4566 --profile localstack)
+
+aws ec2 authorize-security-group-ingress \
+  --group-id "${groupId}" \
+  --protocol tcp --port 22 --cidr 0.0.0.0/0 \
+  --endpoint-url http://localhost:4566 --profile localstack
+
+imageId="ami-04681a1dbd79675a5" # Amazon Linux 2 AMI 2.0.20180810 x86_64 HVM gp2
+
+aws ec2 run-instances \
+  --image-id "$imageId" \
+  --count 2 \
+  --instance-type t2.micro \
+  --key-name "$ec2InstanceName" \
+  --security-group-ids "$groupId" \
+  --endpoint-url http://localhost:4566 --profile localstack

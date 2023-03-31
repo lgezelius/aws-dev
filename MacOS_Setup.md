@@ -47,6 +47,12 @@ Or if using 1Password, add/move the id_ed25519 SSH key to your private vault and
 
     Host *
 	   IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+       
+## git
+
+Change git editor from vi to nano:
+
+    git config --global core.editor "nano"
 
 ## GitHub
 
@@ -87,6 +93,10 @@ Customize your Zsh shell to add python to your path:
     if command -v pyenv 1>/dev/null 2>&1; then
       eval "$(pyenv init -)"
     fi
+    
+You can check which version of python is selected as follows:
+
+    pyenv version 
 
 ## Pip
 
@@ -94,26 +104,16 @@ Pip is the package installer for Python. Each version of python can have it's ow
 
 Upgrade pip. 
 
-    python3 -m pip install --upgrade pip
+    pip install --upgrade pip
 
 Confirm that pip is updated.
-
-### Python 3.8
-
-    % pip3 --version
-    pip 22.1.2 from /Users/larry/Library/Python/3.8/lib/python/site-packages/pip (python 3.8)
     
 ### Python 3.9 (Xcode)
 
     % pip3 --version
     pip 21.2.4 from /Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/site-packages/pip (python 3.9)
     
-### Python 3.10 (Brew)
- 
-    % pip3 --version
-    pip 23.0.1 from /opt/homebrew/lib/python3.10/site-packages/pip (python 3.10)
-    
-### Uninstall all packages
+### Uninstall all python packages
 
     pip3 freeze | xargs pip3 uninstall -y
 
@@ -122,10 +122,6 @@ Confirm that pip is updated.
 Install JQ. JQ is used to extract data from JSON objects.
 
     brew install jq
-
-Install JMESPath Terminal (jpterm).
-
-    pip3 install jmespath-terminal
 
 Install wget
 
@@ -149,9 +145,8 @@ Confirm Docker is running and then start localstack:
 
 ## Install Terraform
 
-Download zip from https://www.terraform.io/downloads. Extract
-
-    sudo mv ~/Downloads/terraform /usr/local/bin/
+    brew tap hashicorp/tap
+    brew install hashicorp/tap/terraform
 
 ## Visual Studio Code
 
@@ -163,8 +158,8 @@ Install extensions:
 
 ## AWS Command Line Interface
 
-See [Installing or updating the latest version of the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+See "Command line installer - All Users" in  [Installing or updating the latest version of the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
     % aws --version
-    aws-cli/2.7.7 Python/3.9.11 Darwin/21.5.0 exe/x86_64 prompt/off
+    ws-cli/2.11.8 Python/3.11.2 Darwin/22.3.0 exe/x86_64 prompt/off
 
